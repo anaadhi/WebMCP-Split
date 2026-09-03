@@ -1,0 +1,10 @@
+{
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "split-circle",
+      "database_id": "PASTE_THE_ID_FROM_WRANGLER_D1_CREATE_HERE",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

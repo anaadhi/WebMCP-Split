@@ -1,0 +1,14 @@
+{
+  "name": "split-circle",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-08-01",
+  "observability": { "enabled": true },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "split-circle",
+      "database_id": "c7a9b3f8-8c00-483b-b9bc-2c9647e1d9df",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

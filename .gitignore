@@ -1,0 +1,4 @@
+node_modules/
+.wrangler/
+GoogleOauth_Secrets.json
+.dev.vars
