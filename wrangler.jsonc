@@ -3,6 +3,7 @@
   "main": "src/worker.js",
   "compatibility_date": "2026-08-01",
   "observability": { "enabled": true },
+  "vars": { "JUDGE_USERNAME": "judge" },
   "d1_databases": [
     {
       "binding": "DB",

@@ -3,6 +3,11 @@ const id=()=>crypto.randomUUID();
 function cookies(request){return Object.fromEntries((request.headers.get('cookie')||'').split(';').filter(Boolean).map(item=>{const i=item.indexOf('=');return[item.slice(0,i).trim(),decodeURIComponent(item.slice(i+1))]}))}
 function setCookie(name,value,maxAge,secure=true){return `${name}=${encodeURIComponent(value)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}${secure?'; Secure':''}`}
 function safeReturnTo(value){return typeof value==='string'&&value.startsWith('/')&&!value.startsWith('//')?value:'/'}
+async function secretEqual(left,right){
+  const encoder=new TextEncoder(),[leftHash,rightHash]=await Promise.all([crypto.subtle.digest('SHA-256',encoder.encode(String(left))),crypto.subtle.digest('SHA-256',encoder.encode(String(right)))]),leftBytes=new Uint8Array(leftHash),rightBytes=new Uint8Array(rightHash);let difference=0;
+  for(let index=0;index<leftBytes.length;index++)difference|=leftBytes[index]^rightBytes[index];
+  return difference===0;
+}
 async function userFor(request,env){const session=cookies(request).split_circle_session;if(!session||!env.DB)return null;return env.DB.prepare(`SELECT u.*,p.id AS person_id,p.public_id FROM sessions s JOIN users u ON u.id=s.user_id JOIN people p ON p.user_id=u.id WHERE s.id=? AND s.expires_at>CURRENT_TIMESTAMP`).bind(session).first()}
 async function requireUser(request,env){const user=await userFor(request,env);if(!user)throw new Response('Sign in required',{status:401});return user}
 function requireDb(env){if(!env.DB)throw new Response('D1 is not configured yet.',{status:503})}
@@ -56,6 +61,18 @@ export async function handleBackend(request,env){
       if(!env.GOOGLE_CLIENT_ID||!env.GOOGLE_CLIENT_SECRET)return new Response('Google OAuth secrets are not configured.',{status:503});
       const state=id(),google=new URL('https://accounts.google.com/o/oauth2/v2/auth');google.search=new URLSearchParams({client_id:env.GOOGLE_CLIENT_ID,redirect_uri:`${url.origin}/auth/callback`,response_type:'code',scope:'openid email profile',state,prompt:'select_account'});
       const secure=url.protocol==='https:',headers=new Headers({location:google.toString()});headers.append('set-cookie',setCookie('split_circle_oauth_state',state,600,secure));headers.append('set-cookie',setCookie('split_circle_return_to',safeReturnTo(url.searchParams.get('returnTo')),600,secure));return new Response(null,{status:302,headers});
+    }
+    if(path==='/auth/judge'&&request.method==='POST'){
+      if(!env.JUDGE_USERNAME||!env.JUDGE_PASSWORD)return json({error:'Judge access is not configured.'},503);
+      let body;try{body=await request.json()}catch{return json({error:'Enter the judge username and password.'},400)}
+      const username=typeof body.username==='string'?body.username.slice(0,100):'',password=typeof body.password==='string'?body.password.slice(0,200):'';
+      const [usernameMatches,passwordMatches]=await Promise.all([secretEqual(username,env.JUDGE_USERNAME),secretEqual(password,env.JUDGE_PASSWORD)]);
+      if(!usernameMatches||!passwordMatches)return json({error:'The judge credentials were not accepted.'},401);
+      const existing=await env.DB.prepare('SELECT id FROM users WHERE google_sub=?').bind('judge-access').first(),userId=existing?.id||id(),displayName='Hackathon Judge',email='judge@split-circle.invalid';
+      await env.DB.prepare(`INSERT INTO users(id,google_sub,email,display_name) VALUES(?,?,?,?) ON CONFLICT(google_sub) DO UPDATE SET display_name=excluded.display_name`).bind(userId,'judge-access',email,displayName).run();
+      const person=await env.DB.prepare('SELECT id FROM people WHERE user_id=?').bind(userId).first();if(!person)await env.DB.prepare('INSERT INTO people(id,public_id,display_name,user_id) VALUES(?,?,?,?)').bind(id(),`#${id().replaceAll('-','').slice(0,8)}`,displayName,userId).run();
+      const session=id(),expiry=new Date(Date.now()+12*36e5).toISOString();await env.DB.prepare('INSERT INTO sessions(id,user_id,expires_at) VALUES(?,?,?)').bind(session,userId,expiry).run();
+      return new Response(JSON.stringify({ok:true}),{headers:{'content-type':'application/json; charset=UTF-8','set-cookie':setCookie('split_circle_session',session,12*3600,url.protocol==='https:')}});
     }
     if(path==='/auth/callback')return callback(request,env,url);
     if(path==='/auth/logout')return new Response(null,{status:302,headers:{location:'/','set-cookie':setCookie('split_circle_session','',0,url.protocol==='https:')}});
