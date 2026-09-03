@@ -2,6 +2,8 @@
 
 A lightweight shared-expense site: create groups, add a purchase, then split equally among selected people or enter custom amounts (including zero). AI can also create answer-driven formula splits, such as sharing alcohol only among drinkers. Formula splits remain unfinished and do not affect balances until every person answers their dynamic questions.
 
+**Live demo:** https://split-circle.anaadhimongia9.workers.dev
+
 ## Deploy to Cloudflare Workers
 
 ```bash
