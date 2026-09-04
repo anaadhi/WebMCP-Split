@@ -1,6 +1,6 @@
 # Split Circle
 
-A lightweight shared-expense site: create groups, add a purchase, then split equally among selected people or enter custom amounts (including zero). AI can also create answer-driven formula splits, such as sharing alcohol only among drinkers. Formula splits remain unfinished and do not affect balances until every person answers their dynamic questions.
+A lightweight shared-expense site: create groups, add a purchase, then split equally among selected people or enter custom amounts (including zero). AI can also create answer-driven formula splits, such as sharing alcohol only among drinkers. Formula splits remain unfinished and do not affect balances until every person answers their dynamic questions. Split creators and group leaders can delete mistaken splits.
 
 **Live demo:** https://split-circle.anaadhimongia9.workers.dev
 
@@ -27,6 +27,10 @@ The tools use the same authenticated API and D1 data as the visual interface, so
 
 Formula questions are shared across the group, but every signed-in member submits only their own answer. The interface shows response counts for each option. A conditional component is divided equally among matching respondents—for example, an alcohol component costs each member `alcohol cost / number of "Yes" responses`, while members who answered "No" owe zero for that component.
 
+## Payments and settlement
+
+Every split records who already paid the original bill. That person receives credit for the full total, while each participant is charged only their calculated share. The Balances tab nets all completed splits and recorded repayments, then suggests who should pay whom. “Settle up” stores the repayment in D1, so balances remain correct across devices and refreshes.
+
 ## Shared groups: D1 + Google sign-in
 
 1. Create a D1 database: `npx wrangler d1 create split-circle`.
@@ -44,7 +48,7 @@ npx wrangler secret put JUDGE_PASSWORD
 
 For local development, copy `.dev.vars.example` to `.dev.vars` and replace the placeholder with a long random password. Never commit `.dev.vars` or put the real judge password in `wrangler.jsonc`. Add the username and password to the hackathon submission form.
 
-When upgrading an existing deployment, apply the latest migration before deploying so formula questions and answers can be stored:
+When upgrading an existing deployment, apply the latest migrations before deploying so formula answers and repayments can be stored:
 
 ```bash
 npx wrangler d1 migrations apply split-circle --remote
