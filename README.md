@@ -29,7 +29,7 @@ Formula questions are shared across the group, but every signed-in member submit
 
 ## Payments and settlement
 
-Every split records who already paid the original bill. That person receives credit for the full total, while each participant is charged only their calculated share. The Balances tab nets all completed splits and recorded repayments, then suggests who should pay whom. Payments remain disabled while any formula split still needs answers. Once every choice is final, “Settle up” stores the repayment in D1, so balances remain correct across devices and refreshes.
+Every split records who already paid the original bill. That person receives credit for the full total, while each participant is charged only their calculated share. The Balances tab nets completed splits and recorded repayments, then suggests who should pay whom. Unfinished formula splits appear separately as live estimates and never increase the amount that can be settled. “Settle up” stores only confirmed repayments in D1, so balances remain correct across devices and refreshes.
 
 ## Shared groups: D1 + Google sign-in
 
