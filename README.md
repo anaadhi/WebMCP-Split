@@ -25,11 +25,11 @@ When opened in a WebMCP-enabled browser, Split Circle registers four tools with 
 
 The tools use the same authenticated API and D1 data as the visual interface, so actions performed by an agent remain visible and editable by people.
 
-Formula questions are shared across the group, but every signed-in member submits only their own answer. The interface shows response counts for each option. A conditional component is divided equally among matching respondents—for example, an alcohol component costs each member `alcohol cost / number of "Yes" responses`, while members who answered "No" owe zero for that component.
+Formula questions are shared across the group, but every signed-in member submits only their own answer. The interface shows response counts for each option. A conditional component is divided equally among matching respondents—for example, an alcohol component costs each member `alcohol cost / number of "Yes" responses`, while members who answered "No" owe zero for that component. Once every participant has answered, all choices are permanently locked.
 
 ## Payments and settlement
 
-Every split records who already paid the original bill. That person receives credit for the full total, while each participant is charged only their calculated share. The Balances tab nets all completed splits and recorded repayments, then suggests who should pay whom. “Settle up” stores the repayment in D1, so balances remain correct across devices and refreshes.
+Every split records who already paid the original bill. That person receives credit for the full total, while each participant is charged only their calculated share. The Balances tab nets all completed splits and recorded repayments, then suggests who should pay whom. Payments remain disabled while any formula split still needs answers. Once every choice is final, “Settle up” stores the repayment in D1, so balances remain correct across devices and refreshes.
 
 ## Shared groups: D1 + Google sign-in
 
