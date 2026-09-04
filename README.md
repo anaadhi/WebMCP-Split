@@ -56,7 +56,7 @@ npx wrangler d1 migrations apply split-circle --remote
 
 The schema creates unclaimed people with a unique `#xxxxxxxx` member ID. Member search only returns people who already share a group with the signed-in user. New typed names stay unclaimed; an owner can create a 14-day claim link through `POST /api/groups/:groupId/share-link`.
 
-Cloudflare D1 stores users, sessions, groups, and splits. Bill-image storage is not implemented in this version.
+Cloudflare D1 stores users, sessions, groups, splits, formula responses, and repayments.
 
 ## License
 

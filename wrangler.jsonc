@@ -1,7 +1,8 @@
 {
   "name": "split-circle",
   "main": "src/worker.js",
-  "compatibility_date": "2026-08-01",
+  "compatibility_date": "2026-09-04",
+  "compatibility_flags": ["nodejs_compat"],
   "observability": { "enabled": true },
   "vars": { "JUDGE_USERNAME": "judge" },
   "d1_databases": [
