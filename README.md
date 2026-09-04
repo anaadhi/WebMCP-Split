@@ -25,6 +25,8 @@ When opened in a WebMCP-enabled browser, Split Circle registers four tools with 
 
 The tools use the same authenticated API and D1 data as the visual interface, so actions performed by an agent remain visible and editable by people.
 
+Formula questions are shared across the group, but every signed-in member submits only their own answer. The interface shows response counts for each option. A conditional component is divided equally among matching respondents—for example, an alcohol component costs each member `alcohol cost / number of "Yes" responses`, while members who answered "No" owe zero for that component.
+
 ## Shared groups: D1 + Google sign-in
 
 1. Create a D1 database: `npx wrangler d1 create split-circle`.
